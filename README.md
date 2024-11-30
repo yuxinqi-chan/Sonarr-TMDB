@@ -1,3 +1,8 @@
+# This repository replaced the Skyhook api with TMDB data and uses UI language as parameter
+
+- api repo [skyhook-tmdb-worker](https://github.com/yuxinqi-chan/skyhook-tmdb-worker)
+  deploy on cloudflare worker
+
 # <img width="24px" src="./Logo/256.png" alt="Sonarr"></img> Sonarr
 
 [![Translated](https://translate.servarr.com/widgets/servarr/-/sonarr/svg-badge.svg)](https://translate.servarr.com/engage/servarr/)
