@@ -34,43 +34,45 @@ namespace NzbDrone.Core.Update
 
         public UpdatePackage GetLatestUpdate(string branch, Version currentVersion)
         {
-            var request = _requestBuilder.Create()
-                                         .Resource("/update/{branch}")
-                                         .AddQueryParam("version", currentVersion)
-                                         .AddQueryParam("os", OsInfo.Os.ToString().ToLowerInvariant())
-                                         .AddQueryParam("arch", RuntimeInformation.OSArchitecture)
-                                         .AddQueryParam("runtime", "netcore")
-                                         .AddQueryParam("runtimeVer", _platformInfo.Version)
-                                         .AddQueryParam("dbType", _mainDatabase.DatabaseType)
-                                         .AddQueryParam("includeMajorVersion", true)
-                                         .SetSegment("branch", branch);
+            return null;
 
-            if (_analyticsService.IsEnabled)
-            {
-                // Send if the system is active so we know which versions to deprecate/ignore
-                request.AddQueryParam("active", _analyticsService.InstallIsActive.ToString().ToLower());
-            }
-
-            var update = _httpClient.Get<UpdatePackageAvailable>(request.Build()).Resource;
-
-            if (!update.Available)
-            {
-                return null;
-            }
-
-            return update.UpdatePackage;
+            // var request = _requestBuilder.Create()
+            //                              .Resource("/update/{branch}")
+            //                              .AddQueryParam("version", currentVersion)
+            //                              .AddQueryParam("os", OsInfo.Os.ToString().ToLowerInvariant())
+            //                              .AddQueryParam("arch", RuntimeInformation.OSArchitecture)
+            //                              .AddQueryParam("runtime", "netcore")
+            //                              .AddQueryParam("runtimeVer", _platformInfo.Version)
+            //                              .AddQueryParam("dbType", _mainDatabase.DatabaseType)
+            //                              .AddQueryParam("includeMajorVersion", true)
+            //                              .SetSegment("branch", branch);
+            //
+            // if (_analyticsService.IsEnabled)
+            // {
+            //     // Send if the system is active so we know which versions to deprecate/ignore
+            //     request.AddQueryParam("active", _analyticsService.InstallIsActive.ToString().ToLower());
+            // }
+            //
+            // var update = _httpClient.Get<UpdatePackageAvailable>(request.Build()).Resource;
+            //
+            // if (!update.Available)
+            // {
+            //     return null;
+            // }
+            //
+            // return update.UpdatePackage;
         }
 
         public List<UpdatePackage> GetRecentUpdates(string branch, Version currentVersion, Version previousVersion)
         {
             var request = _requestBuilder.Create()
-                                         .Resource("/update/{branch}/changes")
-                                         .AddQueryParam("version", currentVersion)
-                                         .AddQueryParam("os", OsInfo.Os.ToString().ToLowerInvariant())
-                                         .AddQueryParam("arch", RuntimeInformation.OSArchitecture)
-                                         .AddQueryParam("runtime", "netcore")
-                                         .AddQueryParam("runtimeVer", _platformInfo.Version)
-                                         .SetSegment("branch", branch);
+                .Resource("/update/{branch}/changes")
+                .AddQueryParam("version", currentVersion)
+                .AddQueryParam("os", OsInfo.Os.ToString().ToLowerInvariant())
+                .AddQueryParam("arch", RuntimeInformation.OSArchitecture)
+                .AddQueryParam("runtime", "netcore")
+                .AddQueryParam("runtimeVer", _platformInfo.Version)
+                .SetSegment("branch", branch);
 
             if (previousVersion != null && previousVersion != currentVersion)
             {
