@@ -19,9 +19,6 @@ on:
         description: 'Sonarr version'
         type: string
         required: true
-    secrets:
-      SERVICES_API_KEY:
-        required: true
 
 jobs:
   package:
