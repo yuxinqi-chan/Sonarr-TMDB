@@ -7,6 +7,7 @@ using NLog;
 using NzbDrone.Common.Cloud;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Common.Http;
+using NzbDrone.Core.Configuration;
 using NzbDrone.Core.DataAugmentation.DailySeries;
 using NzbDrone.Core.Exceptions;
 using NzbDrone.Core.Languages;
@@ -24,11 +25,13 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
         private readonly ISeriesService _seriesService;
         private readonly IDailySeriesService _dailySeriesService;
         private readonly IHttpRequestBuilderFactory _requestBuilder;
+        private readonly IConfigService _configService;
 
         public SkyHookProxy(IHttpClient httpClient,
                             ISonarrCloudRequestBuilder requestBuilder,
                             ISeriesService seriesService,
                             IDailySeriesService dailySeriesService,
+                            IConfigService configService,
                             Logger logger)
         {
             _httpClient = httpClient;
@@ -37,12 +40,16 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
             _seriesService = seriesService;
             _dailySeriesService = dailySeriesService;
             _requestBuilder = requestBuilder.SkyHookTvdb;
+            _configService = configService;
         }
 
         public Tuple<Series, List<Episode>> GetSeriesInfo(int tvdbSeriesId)
         {
+            var isoLanguage = IsoLanguages.Get((Language)_configService.UILanguage) ?? IsoLanguages.Get(Language.English);
+            var language = isoLanguage.TwoLetterCode;
             var httpRequest = _requestBuilder.Create()
                                              .SetSegment("route", "shows")
+                                             .SetSegment("language", language)
                                              .Resource(tvdbSeriesId.ToString())
                                              .Build();
 
@@ -135,8 +142,11 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
                     }
                 }
 
+                var isoLanguage = IsoLanguages.Get((Language)_configService.UILanguage) ?? IsoLanguages.Get(Language.English);
+                var language = isoLanguage.TwoLetterCode;
                 var httpRequest = _requestBuilder.Create()
                                                  .SetSegment("route", "search")
+                                                 .SetSegment("language", language)
                                                  .AddQueryParam("term", title.ToLower().Trim())
                                                  .Build();
 
